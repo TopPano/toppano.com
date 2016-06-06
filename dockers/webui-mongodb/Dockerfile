@@ -15,7 +15,12 @@ RUN apt-get install -y build-essential
 RUN npm install mongo-express
 
 RUN cp /node_modules/mongo-express/config.default.js /node_modules/mongo-express/config.js
+
+RUN apt-get install -y git
+RUN git clone https://verpix-devops:T0ppan0@github.com/TopPano/verpix.me.git ~/verpix.me
+
 ENV WEBUI_MONGO /node_modules/mongo-express
+
 
 EXPOSE 8081
 
