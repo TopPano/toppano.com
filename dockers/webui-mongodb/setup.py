@@ -23,4 +23,4 @@ config_file.seek(0)
 config_file.write(text)
 config_file.close()
 
-os.system('export VCAP_APP_HOST='+webui_ip+';node '+os.environ['WEBUI_MONGO']+'/app.js &')
+os.system('export VCAP_APP_HOST='+webui_ip+';node '+os.environ['WEBUI_MONGO']+'/app.js')
