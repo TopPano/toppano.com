@@ -24,4 +24,4 @@ config_file.write(text)
 config_file.close()
 
 os.system('export VCAP_APP_HOST='+webui_ip)
-os.system('node '+os.environ['WEBUI_MOGNO']+'/app.js')
+os.system('node '+os.environ['WEBUI_MONGO']+'/app.js')
