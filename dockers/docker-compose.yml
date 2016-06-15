@@ -1,0 +1,32 @@
+version: '2'
+services:
+  verpix-dev-api-server:
+    build: ./laputa-api
+    depends_on: 
+     - verpix-dev-mongodb
+     - gearmand
+     - verpix-dev-async
+     - verpix-dev-webui-mongodb
+    ports:
+     - "3001:3000"
+    environment:
+     - DB_URL=mongodb://verpix-dev-mongodb:27017/verpix-dev-db?allowExtendedOperators=true
+     - G_SERVERS={"host":"gearmand", "port":4730}
+  verpix-dev-async:
+    build: ./verpix-async
+    environment:
+    - G_SERVERS={"host":"gearmand", "port":4730}
+    depends_on:
+    - gearmand
+  gearmand:
+    image: pataquets/gearmand
+  verpix-dev-webui-mongodb:
+    build: ./laputa-db/docker/webui_mongodb
+    ports:
+     - "8083:8081"
+    depends_on:
+     - verpix-dev-mongodb
+  verpix-dev-mongodb:
+    build: ./laputa-db/docker/mongodb
+    ports:
+    - "27020:27017"
