@@ -1,5 +1,13 @@
 version: '2'
 services:
+  verpix-web-app:
+    build: ./verpix-web-app
+    depends_on:
+    - verpix-dev-laputa-api
+    port:
+     - "8001:8000"
+    environment:
+     - IS_DAEMON=--no-daemon
   verpix-dev-laputa-api:
     build: ./laputa-api
     depends_on: 
@@ -12,6 +20,7 @@ services:
     environment:
      - DB_URL=mongodb://verpix-dev-mongodb:27017/verpix-dev-db?allowExtendedOperators=true
      - G_SERVERS=[{"host":"gearmand", "port":4730}]
+     - IS_DAEMON=--no-daemon
   verpix-dev-async:
     build: ./verpix-async
     environment:
