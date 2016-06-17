@@ -1,3 +1,8 @@
+[verpix-web-app]
+branch =
+commit = 
+public_port = 8001
+
 [laputa-api]
 branch =
 commit = 
