@@ -1,10 +1,10 @@
 version: '2'
 services:
-  verpix-web-app:
+  verpix-dev-web-app:
     build: ./verpix-web-app
     depends_on:
     - verpix-dev-laputa-api
-    port:
+    ports:
      - "8001:8000"
     environment:
      - IS_DAEMON=--no-daemon
