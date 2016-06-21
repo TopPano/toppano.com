@@ -3,7 +3,7 @@
 ### Prerequisite 
 Install python dependencies:
 ```sh
-pip install -r requirements.txt
+sudo apt-get install python-yaml
 ```
 Install docker: https://docs.docker.com/engine/installation/   
 Install docker-compose: https://docs.docker.com/compose/install/
