@@ -1,0 +1,24 @@
+[verpix-web-app]
+branch =
+commit = 
+public_port = 8001
+
+[laputa-api]
+branch =
+commit = 
+public_port = 8001
+
+[laputa-api]
+branch =
+commit =  
+public_port = 30001
+
+[verpix-async]
+branch = 
+commit = 
+
+[laputa-db]
+branch =
+commit = 
+webui_public_port = 8085
+db_public_port = 27021
