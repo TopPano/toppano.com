@@ -1,4 +1,4 @@
-![verpix](docs/images/logo.png)
+# ![verpix](docs/images/logo.png)
 
 # Welcome to Verpix
 
