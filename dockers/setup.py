@@ -70,6 +70,8 @@ if not os.path.exists(DEST_NAME):
 if laputa_db_commit != '':
     subprocess.call('cd '+DEST_NAME+' && git pull origin master && git checkout '+laputa_db_commit, shell=True)
 
+# chmod laputa-db/data.d/S3/*
+subprocess.call('sudo chmod -R 777 ./laputa-db/data.d/S3', shell=True)
 
 # read docker-compose.yml
 r_stream = file('docker-compose_default.yml', 'r')

@@ -23,12 +23,22 @@ services:
      - DB_URL=mongodb://verpix-dev-mongodb:27017/verpix-dev-db?allowExtendedOperators=true
      - G_SERVERS=[{"host":"gearmand", "port":4730}]
      - IS_DAEMON=--no-daemon
+     - S3_BKT=MOCKUP
+     - S3_MOCKUP_BKTPATH=/S3
+     - S3_MOCKUP_PORT=10001
+    volumes:
+     - ./laputa-db/data.d/S3:/S3
   verpix-dev-async:
     build: ./verpix-async
     environment:
-    - G_SERVERS=[{"host":"gearmand", "port":4730}]
+     - G_SERVERS=[{"host":"gearmand", "port":4730}]
+     - S3_BKT=MOCKUP
+     - S3_MOCKUP_BKTPATH=/S3
+     - S3_MOCKUP_PORT=10001
+    volumes:
+     - ./laputa-db/data.d/S3:/S3
     depends_on:
-    - gearmand
+     - gearmand
   gearmand:
     image: pataquets/gearmand
   verpix-dev-webui-mongodb:
