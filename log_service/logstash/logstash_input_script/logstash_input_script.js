@@ -3,7 +3,7 @@ var AwsCli = require('aws-cli-js');
 
 var aws = new AwsCli({
       aws_access_key_id: 'ur key id', 
-      aws_secret_access_key: 'ur secret key',
+      aws_secret_access_key: 'ur secret key'
 });
 
 
@@ -11,8 +11,13 @@ var region = 'ap-northeast-1';
 var tag = 'production';
 var filters = 'Name=tag:Env,Values='+tag;
 
-var metrics = [{'namespace': 'AWS/EC2', 'metric':'CPUUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']},
-               {'namespace': 'System/Linux', 'metric':'MemoryUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']} ];
+var metrics = [{'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'CPUUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'InstanceId', 'namespace': 'System/Linux', 'metric':'MemoryUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteOps', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteBytes', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadOps', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadBytes', 'statistics': ['Average', 'Maximum', 'Minimum']} 
+               ];
 
 
 // ==== get current timestamp in Taiwan timezone
@@ -38,8 +43,8 @@ function getInstanceId(args, callback){
                 insts = reserv[reserv_idx].Instances;
                 for(inst_idx = 0; inst_idx < insts.length; inst_idx++){
                     refactored_inst = {};
-                    refactored_inst.instanceId = insts[inst_idx].InstanceId;
-                    refactored_inst.volumeId = insts[inst_idx].BlockDeviceMappings[0].Ebs.VolumeId;
+                    refactored_inst.InstanceId = insts[inst_idx].InstanceId;
+                    refactored_inst.VolumeId = insts[inst_idx].BlockDeviceMappings[0].Ebs.VolumeId;
                  
                     tags = insts[inst_idx].Tags;
                     refactored_inst.tags = {};
@@ -56,7 +61,7 @@ function getInstanceId(args, callback){
 
 
 // ==== request for metrics of instances
-function getMetrics(instance_arr, callback){
+function getMetrics(target_arr, callback){
     var currTs = new Date();
     var startTs = new Date();
     
@@ -67,13 +72,13 @@ function getMetrics(instance_arr, callback){
 
     var result = [];
     var aws_q = async.queue(function (task, callback) {
-        aws.command('cloudwatch get-metric-statistics --metric-name '+task.metric+' --start-time '+startTs+' --end-time '+currTs+' --period 300 --region '+region+' --namespace '+task.namespace+' --statistics '+task.statistic+' --dimensions Name=InstanceId,Value='+task.instance.instanceId).then(
+        aws.command('cloudwatch get-metric-statistics --metric-name '+task.metric+' --start-time '+startTs+' --end-time '+currTs+' --period 300 --region '+region+' --namespace '+task.namespace+' --statistics '+task.statistic+' --dimensions Name='+task.idName+',Value='+task.target[task.idName]).then(
                 function(data){
                     var tmp;
                     var j;
                     for(j=0; j<data.object.Datapoints.length; j++){
                         tmp = {};  
-                        tmp['target'] = task.instance;
+                        tmp['target'] = task.target;
                         tmp['metric'] = {};
                         tmp['metric']["Timestamp"] = data.object.Datapoints[j]["Timestamp"];
                         tmp['metric']["Unit"] = data.object.Datapoints[j]["Unit"];
@@ -86,20 +91,20 @@ function getMetrics(instance_arr, callback){
                 });
     }, 5);
 
-    async.each(instance_arr, 
-            function(instance){
+    async.each(target_arr, 
+            function(target){
                 var i, j;
                 for(i = 0; i<metrics.length; i++){
                     for(j = 0; j<metrics[i].statistics.length; j++){
                         aws_q.push({
-                                instance: instance, 
-                                metric: metrics[i].metric,
-                                statistic: metrics[i].statistics[j], 
-                                namespace: metrics[i].namespace}, 
-                            function(){/*console.log("finish "+instanceId);*/});
+                            idName: metrics[i].idName,
+                            target: target, 
+                            metric: metrics[i].metric,
+                            statistic: metrics[i].statistics[j], 
+                            namespace: metrics[i].namespace}, 
+                        function(){/*console.log("finish "+instanceId);*/});
                     }
                 }
-                //aws_q.push({instanceId: instanceId, metric:"MemoryUtilization", namespace:"System/Linux"}, function(){/*console.log("finish "+instanceId);*/});
             }, 
             function(err){console.log(err);})
 
