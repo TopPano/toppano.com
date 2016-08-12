@@ -42,7 +42,7 @@ services:
   gearmand:
     image: pataquets/gearmand
   verpix-dev-webui-mongodb:
-    images: laputa-db-webui:latest
+    image: laputa-db-webui:latest
     ports: 
      - "8083:8081"
     environment:
