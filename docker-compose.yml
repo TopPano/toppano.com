@@ -46,8 +46,8 @@ services:
     ports: 
      - "8083:8081"
     environment:
-     - mongodb: verpix-dev-mongodb 
-     - pwd: verpix
+     - mongodb=verpix-dev-mongodb 
+     - pwd=verpix
     depends_on:
      - verpix-dev-mongodb
   verpix-dev-mongodb:
