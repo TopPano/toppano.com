@@ -8,7 +8,7 @@ node ('master') {
    echo 'Check docker compose'
 
    docker.withServer('tcp://dockerd:4243') {
-      sh 'docker-compose'
+      sh 'docker-compose up verpix-dev-webui-mongodb'
 
    }
 }
