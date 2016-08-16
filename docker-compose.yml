@@ -1,7 +1,7 @@
 version: '2'
 services:
   verpix-dev-web-app:
-    image: ./verpix-web-app
+    image: verpix-web-app:latest
     depends_on:
     - verpix-dev-laputa-api
     ports:
