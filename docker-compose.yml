@@ -8,8 +8,8 @@ services:
      - "8001:8000"
     environment:
      - IS_DAEMON=--no-daemon
-     - API_ROOT="http://http://devops.verpixplus.me:3001"
-     - STATIC_URL="http://http://devops.verpixplus.me:8001"
+     - API_ROOT="http://devops.verpixplus.me:3001"
+     - STATIC_URL="http://devops.verpixplus.me:8001"
   verpix-dev-laputa-api:
     image: laputa-api:latest
     depends_on: 
