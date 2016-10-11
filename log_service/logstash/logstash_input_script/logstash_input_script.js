@@ -12,12 +12,16 @@ var tag = 'production';
 var filters = 'Name=tag:Env,Values='+tag;
 
 var metrics = [{'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'CPUUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']},
-               {'idName': 'InstanceId', 'namespace': 'System/Linux', 'metric':'MemoryUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
-               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteOps', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
-               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteBytes', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
-               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadOps', 'statistics': ['Average', 'Maximum', 'Minimum']}, 
-               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadBytes', 'statistics': ['Average', 'Maximum', 'Minimum']} 
-               ];
+               {'idName': 'InstanceId', 'namespace': 'System/Linux', 'metric':'MemoryUtilization', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteOps', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeWriteBytes', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadOps', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'VolumeId', 'namespace': 'AWS/EBS', 'metric':'VolumeReadBytes', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'NetworkIn', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'NetworkOut', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'NetworkPacketsIn', 'statistics': ['Average', 'Maximum', 'Minimum']},
+               {'idName': 'InstanceId', 'namespace': 'AWS/EC2', 'metric':'NetworkPacketsOut', 'statistics': ['Average', 'Maximum', 'Minimum']}
+             ];
 
 
 // ==== get current timestamp in Taiwan timezone
@@ -65,11 +69,10 @@ function getMetrics(target_arr, callback){
     var currTs = new Date();
     var startTs = new Date();
     
-    // sub 15 minutes
-    startTs.setMinutes(startTs.getMinutes()-15);
+    // sub 18 minutes
+    startTs.setMinutes(startTs.getMinutes()-18);
     currTs = currTs.toISOString();
     startTs = startTs.toISOString();
-
     var result = [];
     var aws_q = async.queue(function (task, callback) {
         aws.command('cloudwatch get-metric-statistics --metric-name '+task.metric+' --start-time '+startTs+' --end-time '+currTs+' --period 300 --region '+region+' --namespace '+task.namespace+' --statistics '+task.statistic+' --dimensions Name='+task.idName+',Value='+task.target[task.idName]).then(
